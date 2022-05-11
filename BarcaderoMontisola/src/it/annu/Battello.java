@@ -4,11 +4,13 @@ public class Battello {
     private String nome;
     private int nPosti;
     private int potenza;
+    private int oraPartenza;
 
-    public Battello(String nome, int nPosti, int potenza) {
+    public Battello(String nome, int nPosti, int potenza, int oraPartenza) {
         this.nome = nome;
         this.nPosti = nPosti;
         this.potenza = potenza;
+        this.oraPartenza = oraPartenza;
     }
     public Battello() {
     }
@@ -23,6 +25,9 @@ public class Battello {
     public void setPotenza(int potenza) {
         this.potenza = potenza;
     }
+    public void setOraPartenza(int oraPartenza) {
+        this.oraPartenza = oraPartenza;
+    }
 
     //Getter
     public String getNome() {
@@ -33,6 +38,9 @@ public class Battello {
     }
     public int getPotenza() {
         return potenza;
+    }
+    public int getOraPartenza() {
+        return oraPartenza;
     }
 
     public void inserisciBattello() {

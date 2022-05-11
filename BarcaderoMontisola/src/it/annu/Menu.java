@@ -35,7 +35,7 @@ public class Menu {
                     break;
                 case 2:
                     Prenotazione p = new Prenotazione();
-                    p.aggiungiPrenotazione();
+                    p.aggiungiPrenotazione(battelli);
                     break;
                 case 3:
                     //cancellaPrenotazione();
