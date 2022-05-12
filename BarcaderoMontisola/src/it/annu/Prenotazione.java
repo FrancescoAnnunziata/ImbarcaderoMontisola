@@ -3,10 +3,8 @@ package it.annu;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Scanner;
+import java.time.Instant;
+import java.util.*;
 
 public class Prenotazione {
     Scanner scanner;
@@ -14,7 +12,6 @@ public class Prenotazione {
     private String dataGrezza;
     private Date dataFinale;
     private int orarioPartenza;
-    private ArrayList<Integer> orari = new ArrayList<Integer>();
     private static final int MAX_POSTI_PRENOTAZIONE = 10;                                                  //Numero massimo di posti prenotabili per prenotazione
 
     public Prenotazione() {
@@ -30,7 +27,7 @@ public class Prenotazione {
         return nPosti;
     }
 
-    public void aggiungiPrenotazione(ArrayList<Battello> battelli){
+    public void aggiungiPrenotazione(ArrayList<Battello> battelli, ArrayList<Integer> orari) throws ParseException {
         boolean exit = false;
 
         //DATA
@@ -41,21 +38,19 @@ public class Prenotazione {
                 SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");                   //Indichiamo il formato della data
                 formatoData.setLenient(false);                                                              //Specifichiamo che l'analisi del formato della data inserita sarà rigida
                 dataFinale  = formatoData.parse(dataGrezza);                                                //Analizza l'input per produrne la data (la usiamo come controllo)
-                System.out.println(formatoData.format(dataFinale));
-                //if(dataFinale.after())
+                if(dataFinale.before(Date.from(Instant.now())) || dataFinale.equals(Date.from(Instant.now()))) {
+                    throw new Exception();
+                }
                 exit = true;
-            } catch(ParseException e) {
+            } catch(Exception e) {
                 System.out.println("Formato data non valido");
             }
         } while(!exit);
 
-        //TODO contollare compatibilità Date e Calendar
-
         //ORA
         System.out.println("----------ORARI----------");
-        for(Battello i : battelli) {
-            System.out.println(i.getOraPartenza());
-            orari.add(i.getOraPartenza());
+        for(int i : orari) {
+            System.out.println(i);
         }
         System.out.println("-------------------------");
         do {
@@ -63,15 +58,13 @@ public class Prenotazione {
             orarioPartenza = scanner.nextInt();
         } while(!orari.contains(orarioPartenza));
 
-
-
-        //ELABAROZIONE FINALE
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        //dataFinale = dateFormat.parse(dataGrezza);
-        //System.out.println(dateFormat.format(dataFinale));
-
-        //TODO Inserire controllo data che non sia prima del giorno della prenotazione (Calendar e Date)
-
+        /*//ELABAROZIONE FINALE
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh");
+        Date hours = dateFormat.parse(String.valueOf(orarioPartenza));
+        dataFinale.setTime(hours.getTime());
+        System.out.println(dataFinale);
+        //System.out.println(dateFormat.format(dataFinale));*/
+        //TODO Contollare se effetivamente serve l'elaborazione finale
 
         System.out.println("Inserire il numero di posti (MAX " + MAX_POSTI_PRENOTAZIONE + "): ");
         do {

@@ -1,19 +1,21 @@
 package it.annu;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
     int scelta;
     Scanner scanner;
-    ArrayList<Battello> battelli;
+    ArrayList<Battello> battelli = new ArrayList<Battello>();
+    ArrayList<Integer> orari = new ArrayList<Integer>();
 
     public Menu() {
         scanner = new Scanner(System.in);
         this.battelli = new ArrayList<>();
     }
 
-    public void run() {
+    public void run() throws ParseException {
         while(true) {
             System.out.println(
                     "----------MENU----------\n" +
@@ -31,11 +33,12 @@ public class Menu {
                     System.out.println("Esecuzione terminata con successo");
                     return;
                 case 1:
-                    //inserisciBattello();
+                    Battello b = new Battello();
+                    b.inserisciBattello(battelli, orari);
                     break;
                 case 2:
                     Prenotazione p = new Prenotazione();
-                    p.aggiungiPrenotazione(battelli);
+                    p.aggiungiPrenotazione(battelli, orari);
                     break;
                 case 3:
                     //cancellaPrenotazione();
