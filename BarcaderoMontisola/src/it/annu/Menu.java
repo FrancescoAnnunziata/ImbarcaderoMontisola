@@ -2,17 +2,23 @@ package it.annu;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Menu {
     int scelta;
     Scanner scanner;
-    ArrayList<Battello> battelli = new ArrayList<Battello>();
-    ArrayList<Integer> orari = new ArrayList<Integer>();
+    ArrayList<Battello> battelli;
+    ArrayList<Integer> orari;
+    HashMap<Date, Integer> calendario;
+
 
     public Menu() {
         scanner = new Scanner(System.in);
         this.battelli = new ArrayList<>();
+        this.orari = new ArrayList<>();
+        this.calendario = new HashMap<>();
     }
 
     public void run() throws ParseException {
@@ -28,17 +34,18 @@ public class Menu {
             );
 
             scelta = scanner.nextInt();
+            scanner.nextLine();
             switch(scelta) {
                 case 0:
-                    System.out.println("Esecuzione terminata con successo");
+                    System.out.println("Buon viaggio con IseoLakeTravel");
                     return;
                 case 1:
-                    Battello b = new Battello();
-                    b.inserisciBattello(battelli, orari);
+                    Battello b = Battello.inserisciBattello(scanner, orari, battelli);
+                    battelli.add(b);
                     break;
                 case 2:
                     Prenotazione p = new Prenotazione();
-                    p.aggiungiPrenotazione(battelli, orari);
+                    p.aggiungiPrenotazione(battelli, orari, calendario);
                     break;
                 case 3:
                     //cancellaPrenotazione();
