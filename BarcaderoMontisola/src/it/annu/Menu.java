@@ -1,5 +1,8 @@
 package it.annu;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,7 @@ public class Menu {
         this.prenotazioni = new ArrayList<>();
     }
 
-    public void run() throws ParseException {
+    public void run() throws ParseException, IOException {
         while(true) {
             System.out.println(
                     "----------MENU----------\n" +
@@ -46,7 +49,10 @@ public class Menu {
                     break;
                 case 2:
                     Prenotazione p = Prenotazione.aggiungiPrenotazione(battelli, orari, calendario);
+                    PrintWriter w = new PrintWriter(new FileWriter("Ricevuta.txt", false));
                     if(p != null) {
+                        w.println("RICEVUTA\n" + p.toString());
+                        w.close();
                         prenotazioni.add(p);
                     }
                     break;

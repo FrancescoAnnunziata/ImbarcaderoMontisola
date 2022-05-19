@@ -58,22 +58,26 @@ public class Prenotazione {
 
             //POSTI
             int postiDisponibili = calendario.get(prenotazione.dataDef);
-            int postiAggiornati;
-            do {
-                System.out.println("Posti ancora disponibili: " + postiDisponibili);
-                System.out.println("Inserire il numero di posti (MAX " + MAX_POSTI_PRENOTAZIONE + "): ");
-                prenotazione.nPosti = prenotazione.scanner.nextInt();
-                postiAggiornati = postiDisponibili - prenotazione.nPosti;
-                if(postiAggiornati < 0) {
-                    exit = false;
-                    System.out.println("Superato il numero massimo di posti disponibli");
-                    postiAggiornati = postiDisponibili;
-                } else {
-                    calendario.replace(prenotazione.dataDef, postiAggiornati);
-                    exit = true;
-                }
-            } while(prenotazione.nPosti < 1 || prenotazione.nPosti > 10 || !exit);
-
+            if(postiDisponibili == 0) {
+                System.out.println("Il battello è già al completo");
+                return prenotazione = null;
+            } else {
+                int postiAggiornati;
+                do {
+                    System.out.println("Posti ancora disponibili: " + postiDisponibili);
+                    System.out.println("Inserire il numero di posti (MAX " + MAX_POSTI_PRENOTAZIONE + "): ");
+                    prenotazione.nPosti = prenotazione.scanner.nextInt();
+                    postiAggiornati = postiDisponibili - prenotazione.nPosti;
+                    if(postiAggiornati < 0) {
+                        exit = false;
+                        System.out.println("Superato il numero massimo di posti disponibli");
+                        postiAggiornati = postiDisponibili;
+                    } else {
+                        calendario.replace(prenotazione.dataDef, postiAggiornati);
+                        exit = true;
+                    }
+                } while(prenotazione.nPosti < 1 || prenotazione.nPosti > 10 || !exit);
+            }
         }
         return prenotazione;
     }
