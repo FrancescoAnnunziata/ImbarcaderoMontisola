@@ -109,11 +109,12 @@ public class Prenotazione {
     public void elenco(ArrayList<Battello> battelli, ArrayList<Integer> orari, HashMap<Date, Integer> calendario) throws ParseException {
         Data d = new Data();
         System.out.println("Inserire i dati riguardanti la data che si vuole esaminare: ");
-        int posti = calendario.get(d.elaborazioneFinale(orari));
+        Date data = d.elaborazioneFinale(orari);
+        float posti = calendario.get(data);
         for(Battello i : battelli) {
             if(d.getOra() == i.getOraPartenza()) {
                 int postiIniziali = i.getnPosti();
-                int percentuale = posti / postiIniziali * 100;
+                float percentuale = 100 - ((posti / postiIniziali) * 100);
                 System.out.println("Percentuale di posti occupati del battello " + i.getNome() + " nel giorno " + d.getData() + ": " + percentuale + "%\n");
             }
         }
