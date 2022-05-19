@@ -24,7 +24,7 @@ public class Data {
         String date = null;
         String dataGrezza;
         do {
-            System.out.println("Inserire la data [gg/mm/yyyy]: ");
+            System.out.println("Inserire la data della prenotazione [gg/mm/yyyy]: ");
             dataGrezza = scanner.nextLine();
             try {
                 SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");                   //Indichiamo il formato della data

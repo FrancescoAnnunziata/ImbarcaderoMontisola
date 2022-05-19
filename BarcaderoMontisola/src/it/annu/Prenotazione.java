@@ -107,15 +107,20 @@ public class Prenotazione {
     }
 
     public void elenco(ArrayList<Battello> battelli, ArrayList<Integer> orari, HashMap<Date, Integer> calendario) throws ParseException {
-        Data d = new Data();
-        System.out.println("Inserire i dati riguardanti la data che si vuole esaminare: ");
-        Date data = d.elaborazioneFinale(orari);
-        float posti = calendario.get(data);
-        for(Battello i : battelli) {
-            if(d.getOra() == i.getOraPartenza()) {
-                int postiIniziali = i.getnPosti();
-                float percentuale = 100 - ((posti / postiIniziali) * 100);
-                System.out.println("Percentuale di posti occupati del battello " + i.getNome() + " nel giorno " + d.getData() + ": " + percentuale + "%\n");
+        if(orari.isEmpty()) {
+            System.out.println("Non vi è alcun battello disponibile");
+            return;
+        } else {
+            Data d = new Data();
+            System.out.println("Inserire i dati riguardanti la data che si vuole esaminare: ");
+            Date data = d.elaborazioneFinale(orari);
+            float posti = calendario.get(data);
+            for (Battello i : battelli) {
+                if (d.getOra() == i.getOraPartenza()) {
+                    int postiIniziali = i.getnPosti();
+                    float percentuale = 100 - ((posti / postiIniziali) * 100);
+                    System.out.println("Percentuale di posti occupati del battello " + i.getNome() + " nel giorno " + d.getData() + ": " + percentuale + "%\n");
+                }
             }
         }
 
