@@ -12,13 +12,14 @@ public class Menu {
     ArrayList<Battello> battelli;
     ArrayList<Integer> orari;
     HashMap<Date, Integer> calendario;
-
+    ArrayList<Prenotazione> prenotazioni;
 
     public Menu() {
         scanner = new Scanner(System.in);
         this.battelli = new ArrayList<>();
         this.orari = new ArrayList<>();
         this.calendario = new HashMap<>();
+        this.prenotazioni = new ArrayList<>();
     }
 
     public void run() throws ParseException {
@@ -44,14 +45,21 @@ public class Menu {
                     battelli.add(b);
                     break;
                 case 2:
-                    Prenotazione p = new Prenotazione();
-                    p.aggiungiPrenotazione(battelli, orari, calendario);
+                    Prenotazione p = Prenotazione.aggiungiPrenotazione(battelli, orari, calendario);
+                    if(p != null) {
+                        prenotazioni.add(p);
+                    }
                     break;
                 case 3:
-                    //cancellaPrenotazione();
+                    Prenotazione s = new Prenotazione();
+                    s.cancellaPrenotazione(orari, prenotazioni, calendario);
                     break;
                 case 4:
-                    //elenco();
+                    for(Prenotazione i : prenotazioni) {
+                        System.out.println(i.toString());
+                    }
+                    Prenotazione q = new Prenotazione();
+                    q.elenco(battelli, orari, calendario);
                     break;
             }
         }

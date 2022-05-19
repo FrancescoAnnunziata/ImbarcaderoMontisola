@@ -9,16 +9,6 @@ public class Battello {
     private int nPosti;
     private int oraPartenza;
 
-
-    /*public Battello(String nome, int nPosti, int potenza, int oraPartenza) {
-        this.nome = nome;
-        this.nPosti = nPosti;
-        this.potenza = potenza;
-        this.oraPartenza = oraPartenza;
-        scanner = new Scanner(System.in);
-    }*/
-    //TODO COntrolla l'effettiva utilità di questo costruttore
-
     public Battello() {
         scanner = new Scanner(System.in);
     }

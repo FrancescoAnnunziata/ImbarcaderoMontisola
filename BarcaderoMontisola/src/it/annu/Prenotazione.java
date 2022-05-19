@@ -2,19 +2,18 @@ package it.annu;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 
 public class Prenotazione {
     Scanner scanner;
+    private Cliente cliente;
+    private Date dataDef;
     private int nPosti;
-    private Date dataFinale;
-    private int orarioPartenza;
     private static final int MAX_POSTI_PRENOTAZIONE = 10;                                                  //Numero massimo di posti prenotabili per prenotazione
 
     public Prenotazione() {
         scanner = new Scanner(System.in);
-        this.dataFinale = new Date();
+        this.cliente = new Cliente();
     }
 
     public void setnPosti(int nPosti) {
@@ -24,80 +23,110 @@ public class Prenotazione {
     public int getnPosti() {
         return nPosti;
     }
+    public Cliente getCliente() {
+        return cliente;
+    }
+    public Date getDataDef() {
+        return dataDef;
+    }
 
-    public void aggiungiPrenotazione(ArrayList<Battello> battelli, ArrayList<Integer> orari, HashMap<Date, Integer> calendario) throws ParseException {
-        boolean exit = false;
+    public static Prenotazione aggiungiPrenotazione(ArrayList<Battello> battelli, ArrayList<Integer> orari, HashMap<Date, Integer> calendario) throws ParseException {
+        Prenotazione prenotazione = new Prenotazione();
+        if(orari.isEmpty()) {
+            System.out.println("Non vi è alcun battello disponibile");
+            return prenotazione = null;
+        } else {
+            boolean exit = false;
 
+            //CLIENTE
+            prenotazione.cliente = Cliente.nuovoCliente();
+
+            //DATA
+            Data data = new Data();
+            prenotazione.dataDef = data.elaborazioneFinale(orari);
+
+            //Riempimento hashmap
+            if (!calendario.containsKey(prenotazione.dataDef)) {
+                int posti;
+                for (Battello i : battelli) {
+                    if (i.getOraPartenza() == data.getOra()) {
+                        posti = i.getnPosti();
+                        calendario.put(prenotazione.dataDef, posti);
+                    }
+                }
+            }
+
+            //POSTI
+            int postiDisponibili = calendario.get(prenotazione.dataDef);
+            int postiAggiornati;
+            do {
+                System.out.println("Posti ancora disponibili: " + postiDisponibili);
+                System.out.println("Inserire il numero di posti (MAX " + MAX_POSTI_PRENOTAZIONE + "): ");
+                prenotazione.nPosti = prenotazione.scanner.nextInt();
+                postiAggiornati = postiDisponibili - prenotazione.nPosti;
+                if(postiAggiornati < 0) {
+                    exit = false;
+                    System.out.println("Superato il numero massimo di posti disponibli");
+                    postiAggiornati = postiDisponibili;
+                } else {
+                    calendario.replace(prenotazione.dataDef, postiAggiornati);
+                    exit = true;
+                }
+            } while(prenotazione.nPosti < 1 || prenotazione.nPosti > 10 || !exit);
+
+        }
+        return prenotazione;
+    }
+
+    public void cancellaPrenotazione(ArrayList<Integer> orari, ArrayList<Prenotazione> prenotazioni, HashMap<Date, Integer> calendario) throws ParseException {
         if(orari.isEmpty()) {
             System.out.println("Non vi è alcun battello disponibile");
             return;
-        }
-
-        //DATA
-        String data = null;
-        String dataGrezza;
-        do {
-            System.out.println("Inserire la data [gg/mm/yyyy]: ");
-            dataGrezza = scanner.nextLine();
-            try {
-                SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");                   //Indichiamo il formato della data
-                formatoData.setLenient(false);                                                              //Specifichiamo che l'analisi del formato della data inserita sarà rigida
-                dataFinale = formatoData.parse(dataGrezza);                                                 //Analizza l'input per produrne la data (la usiamo come controllo)
-                data = formatoData.format(dataFinale);
-                if (dataFinale.before(Date.from(Instant.now())) || dataFinale.equals(Date.from(Instant.now()))) {
-                    throw new Exception();
-                }
-                exit = true;
-            } catch (Exception e) {
-                System.out.println("Formato data non valido");
-            }
-        } while (!exit);
-
-        //ORA
-        System.out.println("----------ORARI----------");
-        for (int i : orari) {
-            System.out.println(i);
-        }
-        System.out.println("-------------------------");
-        do {
-            System.out.println("Inserire l'orario scegliendo tra quelli disponibili [hh]: ");
-            orarioPartenza = scanner.nextInt();
-        } while (!orari.contains(orarioPartenza));
-        data += " " + orarioPartenza;
-
-        //ELABAROZIONE FINALE
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh");
-        Date dataDef = dateFormat.parse(data);
-        //System.out.println(dateFormat.format(dataDef));
-
-        //Riempimento hashmap
-        if (!calendario.containsKey(dataDef)) {
-            int posti;
-            for (Battello i : battelli) {
-                if (i.getOraPartenza() == orarioPartenza) {
-                    posti = i.getnPosti();
-                    calendario.put(dataDef, posti);
+        } else {
+            System.out.println("Inserire i dati della prenotazione: ");
+            int postiDisponibili;
+            cliente = Cliente.nuovoCliente();
+            for(Prenotazione i : prenotazioni) {
+                String n1 = cliente.getNome(), c1 = cliente.getCognome(), l1 = cliente.getCognome();
+                String n2 = i.cliente.getNome(), c2 = i.cliente.getCognome(), l2 = i.cliente.getCognome();
+                if(n1.equalsIgnoreCase(n2) && c1.equalsIgnoreCase(c2) && l1.equalsIgnoreCase(l2)) {
+                    Data data = new Data();
+                    dataDef = data.elaborazioneFinale(orari);
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh");
+                    String d1 = df.format(dataDef), d2 = df.format(i.getDataDef());
+                    if(d1.equals(d2)) {
+                        postiDisponibili = calendario.get(dataDef) + i.getnPosti();
+                        calendario.replace(dataDef, postiDisponibili);
+                        prenotazioni.remove(i);
+                    }
+                } else {
+                    System.out.println("Non esiste alcuna prenotazione associata ai dati inseriti");
                 }
             }
         }
+    }
 
-        //POSTI
-        int postiDisponibili = calendario.get(dataDef);
-        int postiAggiornati;
-        do {
-            System.out.println("Posti ancora disponibili: " + postiDisponibili);
-            System.out.println("Inserire il numero di posti (MAX " + MAX_POSTI_PRENOTAZIONE + "): ");
-            nPosti = scanner.nextInt();
-            postiAggiornati = postiDisponibili - nPosti;
-            if(postiAggiornati < 0) {
-                exit = false;
-                System.out.println("Superato il numero massimo di posti disponibli");
-                postiAggiornati = postiDisponibili;
-            } else {
-                calendario.replace(dataDef, postiAggiornati);
-                exit = true;
+    public void elenco(ArrayList<Battello> battelli, ArrayList<Integer> orari, HashMap<Date, Integer> calendario) throws ParseException {
+        Data d = new Data();
+        System.out.println("Inserire i dati riguardanti la data che si vuole esaminare: ");
+        int posti = calendario.get(d.elaborazioneFinale(orari));
+        for(Battello i : battelli) {
+            if(d.getOra() == i.getOraPartenza()) {
+                int postiIniziali = i.getnPosti();
+                int percentuale = posti / postiIniziali * 100;
+                System.out.println("Percentuale di posti occupati del battello " + i.getNome() + " nel giorno " + d.getData() + ": " + percentuale + "%\n");
             }
-        } while(nPosti < 1 || nPosti > 10 || !exit);
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "-------------------------\n" +
+                cliente +
+                "\nDATA: " + dataDef +
+                "\nPOSTI: " + nPosti +
+                "\n-------------------------";
     }
 }
 
